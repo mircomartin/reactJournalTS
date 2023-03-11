@@ -1,58 +1,55 @@
+import { FC, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Google } from '@mui/icons-material';
 import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
-import { FC, useState } from 'react';
 import { AuthLayout } from '../layout/AuthLayout';
-import axios from 'axios';
-
-interface LoginProps {
-	email: string,
-	password: string
-}
+import { useForm } from '../../hooks';
+import { AuthContext } from '../../context';
 
 export const LoginPage: FC = () => {
 
-	const [ values, setValues ] = useState<LoginProps>({
-		email: 'admin@admin',
-		password: 'admin1234'
+	const { checkingAuth, startGoogleSignIn } = useContext(AuthContext)
+
+	const { email, password, onInputChange } = useForm({
+		email: 'mirco@mirco.com',
+		password: '123456'
 	})
-	const { email, password } = values;
 
-	const handleInputChange = ( e :React.ChangeEvent<HTMLInputElement> ) => {
-		const { name, value } = e.target;
-
-		setValues({
-				...values,
-				[ name ]: value
-		});
-
+	const handleSubmit = ( e:React.FormEvent<HTMLFormElement> ) => {
+		e.preventDefault();
+		checkingAuth( email!, password! )
+		console.log('click')
 	}
 
-	const handleLogin = async ( e:React.FormEvent<HTMLFormElement> ) => {
-		e.preventDefault();
-		
+	const onGoogleSignIn = () => {
+		console.log('Google SignIn')
+		startGoogleSignIn();
 	}
 
 	return (
 		<AuthLayout title="Iniciar Sesión">
-			<form className="form-auth" onSubmit={ handleLogin }>
+			<form className="form-auth" onSubmit={ handleSubmit }>
 				<Grid container direction="column" gap={ 2 } sx={{ width:'100%' }}>
 
 					<Grid item>
 						<TextField 
-						onChange={ handleInputChange }
-						value={ email }
-						name="email" 
-						label="Correo" 
-						type="email" 
-						placeholder="correo@correo.com" 
-						fullWidth />
+							onChange={ onInputChange }
+							value={ email }
+							name="email" 
+							label="Correo" 
+							type="email" 
+							placeholder="correo@correo.com" 
+							fullWidth />
 					</Grid>
 					<Grid item>
 						<TextField 
-						onChange={ handleInputChange }
-						value={ password }
-						name="password" label="Contraseña" type="password" placeholder="Contraseña" fullWidth />
+							onChange={ onInputChange }
+							value={ password }
+							name="password" 
+							label="Contraseña" 
+							type="password" 
+							placeholder="Contraseña" 
+							fullWidth />
 					</Grid>
 
 					<Grid container gap={ 2 } direction="column" justifyContent="center" alignItems="center">
@@ -62,7 +59,7 @@ export const LoginPage: FC = () => {
 							</Button>
 						</Grid>
 						<Grid item>
-							<Button variant="contained" sx={{ minWidth:200 }}>
+							<Button variant="contained" sx={{ minWidth:200 }} onClick={ onGoogleSignIn }>
 								<Google />
 								<Typography ml={ 1 }>
 									Google

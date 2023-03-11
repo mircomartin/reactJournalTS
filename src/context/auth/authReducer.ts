@@ -3,7 +3,7 @@ import { AuthState } from './';
 type AuthActionType =
 | { type: 'Auth - Login' }
 | { type: 'Auth - Logout' }
-| { type: 'Auth - Checking' }
+| { type: 'Auth - Checking', payload: string }
 
 export const authReducer = ( state: AuthState, action: AuthActionType ): AuthState => {
 
@@ -19,6 +19,7 @@ export const authReducer = ( state: AuthState, action: AuthActionType ): AuthSta
 				case 'Auth - Checking':
 					return {
 							...state,
+							status: 'checking',
 					}
 				default:
 						return state;
